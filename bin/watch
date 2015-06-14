@@ -1,0 +1,3 @@
+#!/bin/sh
+
+node_modules/.bin/jsx --extension jsx --watch src/ js/

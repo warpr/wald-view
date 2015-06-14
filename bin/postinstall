@@ -1,0 +1,3 @@
+#!/bin/sh
+
+cd node_modules/n3 && npm install && browser/build-browser-versions
