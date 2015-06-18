@@ -13,12 +13,7 @@ wald.find = wald.find ? wald.find : {};
 
 (function () {
 
-    var literal = function (datastore, id, predicates, languages) {
-        // languages is currently ignored.  The idea for that param is to build a
-        // fallback system/mapping where you can call something like preferredLanguage("nl")
-        // which would return all language tags which should match that (e.g. "nl_NL",
-        // "nl_BE", etc..).
-
+    var list = function (datastore, id, predicates) {
         if (!_(predicates).isArray()) {
             predicates = [ predicates ];
         }
@@ -29,17 +24,43 @@ wald.find = wald.find ? wald.find : {};
             .flatten(1)
             .value();
 
-        if (!candidates.length) {
-            return false;
-        }
+        return _(candidates).pluck('object');
+    };
 
-        // FIXME; this hardcodes a preference for english over other languages, remove
-        // this when the languages param is supported.
-        return N3.Util.getLiteralValue(candidates[0].object);
+    var first = function (datastore, id, predicates) {
+        var items = list(datastore, id, predicates);
+        return items.length ? items[0] : null;
+    }
+
+    var links = function (datastore, id, predicates) {
+        return _(list(datastore, id, predicates))
+            .filter(function (item) { return N3.Util.isIRI(item); })
+    };
+
+    var literal = function (datastore, id, predicates, languages) {
+        // languages is currently ignored.  The idea for that param is to build a
+        // fallback system/mapping where you can call something like preferredLanguage("nl")
+        // which would return all language tags which should match that (e.g. "nl_NL",
+        // "nl_BE", etc..).
+
+        var value = first(datastore, id, predicates);
+        return value ? N3.Util.getLiteralValue(value) : null;
     };
 
     var Query = function (datastore) {
         this.datastore = datastore;
+    };
+
+    Query.prototype.list = function (id, predicates) {
+        return list(this.datastore, id, predicates);
+    };
+
+    Query.prototype.first = function (id, predicates) {
+        return first(this.datastore, id, predicates);
+    };
+
+    Query.prototype.links = function (id, predicates) {
+        return links(this.datastore, id, predicates);
     };
 
     Query.prototype.literal = function (id, predicates, languages) {
@@ -49,6 +70,18 @@ wald.find = wald.find ? wald.find : {};
     var Model = function (datastore, id) {
         this.datastore = datastore;
         this.id = id;
+    };
+
+    Model.prototype.list = function (predicates) {
+        return list(this.datastore, this.id, predicates);
+    };
+
+    Model.prototype.first = function (predicates) {
+        return first(this.datastore, this.id, predicates);
+    };
+
+    Model.prototype.links = function (predicates) {
+        return links(this.datastore, this.id, predicates);
     };
 
     Model.prototype.literal = function (predicates, languages) {
