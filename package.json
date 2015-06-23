@@ -7,6 +7,7 @@
     "url": "https://github.com/warpr/wald-find/issues"
   },
   "dependencies": {
+    "bower": "^1.4.1",
     "jquery": "^2.1.4",
     "jsonld": "^0.3.22",
     "n3": "^0.4.3",

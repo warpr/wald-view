@@ -72,8 +72,15 @@ wald.find = wald.find ? wald.find : {};
         return Q($.get(iri)).then(function (data) {
             return parseTurtle(data, datastore);
         });
-    }
+    };
 
+    var loadFragments = function (server, subject, datastore) {
+        var ldf = new wald.find.LDF(server, datastore);
+
+        return ldf.query({ 'subject': subject });
+    };
+
+    wald.find.loadFragments = loadFragments;
     wald.find.loadTurtle = loadTurtle;
 })();
 
