@@ -31,7 +31,10 @@ var main = function (datastore) {
     var agpl3 = new wald.find.Model(datastore, 'lidb:AGPL-3');
 
     React.render (
-        <licensedb.License model={agpl3} />,
+        <div>
+            <licensedb.License model={agpl3} />
+            <licensedb.PlainText model={agpl3} />
+        </div>,
         document.getElementById('main')
     );
 };

@@ -147,5 +147,40 @@ licensedb.License = React.createClass({
     }
 });
 
+licensedb.PlainText = React.createClass({
+    getInitialState: function () {
+        return { body: 'first KOEK' };
+    },
+    componentDidMount: function () {
+        if (this.props) {
+            this.loadDocument(this.props);
+        }
+    },
+    componentWillReceiveProps: function (nextProps) {
+        this.loadDocument(nextProps);
+    },
+    loadDocument: function (props) {
+        var self = this;
+        var values = props.model.list('li:plaintext');
+
+        var plaintext = _(values).find(function (iri) {
+            return s(iri).startsWith('https://licensedb.org/id/');
+        });
+
+        if (plaintext) {
+            $.get(plaintext).then(function (data) {
+                self.setState({ body: data });
+            });
+        }
+    },
+    render: function () {
+        return (
+            <div className="license-plain-text">
+                <pre>{this.state.body}</pre>
+            </div>
+        );
+    }
+});
+
 // -*- mode: web -*-
 // -*- engine: jsx -*-
