@@ -49,11 +49,30 @@ WALD.image = React.createClass({
     }
 });
 
+WALD.QName = React.createClass({
+    render: function () {
+        var s_iri = s(this.props.iri);
+        var qname = this.props.iri;
+
+        _(this.props.datastore._prefixes).find(function (basePath, prefix) {
+            if (s_iri.startsWith(basePath)) {
+                qname = qname.replace(basePath, prefix + ':');
+                return true;
+            }
+
+            return false;
+        });
+
+        return <a href={this.props.iri}>{qname}</a>;
+    }
+});
+
 WALD.keyValue = React.createClass({
     render: function () {
-        var predicate = this.props.predicate;
+        var self = this;
+        var predicate = self.props.predicate;
 
-        var values = this.props.subject.list(predicate);
+        var values = self.props.subject.list(predicate);
 
         var prefix = '';
         var label = predicate;
@@ -68,7 +87,7 @@ WALD.keyValue = React.createClass({
             var valueStr = '';
             if (value) {
                 if (N3.Util.isIRI(value)) {
-                    valueStr = <a href={value}>{value}</a>;
+                    valueStr = <WALD.QName datastore={self.props.subject.datastore} iri={value} />;
                 } else {
                     valueStr = N3.Util.getLiteralValue(value);
                 }
