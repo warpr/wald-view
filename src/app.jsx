@@ -8,6 +8,14 @@
 
 'use strict';
 
+var React = require('react');
+var datastore = require('datastore');
+var licensedb = require('license');
+var query = require('query');
+
+var server = 'https://licensedb.org/data/licensedb';
+var subject = 'https://licensedb.org/id/AGPL-3';
+
 var main = function (datastore) {
 
     datastore.addPrefix('lidb', 'https://licensedb.org/id/');
@@ -28,7 +36,9 @@ var main = function (datastore) {
     datastore.addPrefix('xml', 'http://www.w3.org/XML/1998/namespace');
     datastore.addPrefix('xsd', 'http://www.w3.org/2001/XMLSchema#');
 
-    var agpl3 = new wald.find.Model(datastore, 'lidb:AGPL-3');
+    var agpl3 = new query.Model(datastore, 'lidb:AGPL-3');
+
+    console.log('loaded AGPLv3?', agpl3);
 
     React.render (
         <div>
@@ -38,18 +48,16 @@ var main = function (datastore) {
         document.getElementById('main')
     );
 };
+
 /*
-wald.find.loadTurtle('licensedb.2015-06-06.ttl')
+datastore.loadTurtle('licensedb.2015-06-06.ttl')
     .then(main)
     .catch(function (err) {
         console.log ('ERROR: ', err);
     });
 */
 
-var server = 'https://licensedb.org/data/licensedb';
-var subject = 'https://licensedb.org/id/AGPL-3';
-
-wald.find.loadFragments(server, subject)
+datastore.loadFragments(server, subject)
     .then(main)
     .catch(function (err) {
         console.log ('ERROR: ', err);

@@ -8,81 +8,77 @@
 
 'use strict';
 
-var wald = wald ? wald : {};
-wald.find = wald.find ? wald.find : {};
+var LDF = require('ldf');
+var N3 = require('n3/browser/n3-browser');
+var NProgress = require('nprogress');
+var when = require('when');
 
-(function () {
-    var streamTurtle = function (data) {
-        var chunkSize = 1024 * 1024;
-        var dataSize = data.length;
-        var offset = 0;
-        var delay = 50;
-        var i = 0;
-        var parser = new N3.Parser();
+var streamTurtle = function (data) {
+    var chunkSize = 1024 * 1024;
+    var dataSize = data.length;
+    var offset = 0;
+    var delay = 50;
+    var parser = new N3.Parser();
 
-        NProgress.start();
+    NProgress.start();
 
-        var nextChunk = function () {
-            if (offset < dataSize) {
-                NProgress.set(offset / dataSize);
-                parser.addChunk(data.slice(offset, chunkSize + offset));
-                offset += chunkSize;
-                setTimeout (nextChunk, delay);
-            } else {
-                parser.end();
-                NProgress.done();
-            }
+    var nextChunk = function () {
+        if (offset < dataSize) {
+            NProgress.set(offset / dataSize);
+            parser.addChunk(data.slice(offset, chunkSize + offset));
+            offset += chunkSize;
+            setTimeout (nextChunk, delay);
+        } else {
+            parser.end();
+            NProgress.done();
         }
+    }
 
-        setTimeout(function () {
-            nextChunk();
-        }, delay);
+    setTimeout(function () {
+        nextChunk();
+    }, delay);
 
-        return parser;
-    };
+    return parser;
+};
 
-    var parseTurtle = function (input, datastore) {
-        var deferred = Q.defer ();
+var parseTurtle = function (input, datastore) {
+    var deferred = when.defer ();
 
-        var parser = streamTurtle(input);
-        parser.parse (function (err, triple, prefixes) {
-            if (err)
-            {
-                deferred.reject (err);
-            }
-            else if (triple)
-            {
-                datastore.addTriple(triple);
-            }
-            else
-            {
-                datastore.addPrefixes(prefixes);
-                deferred.resolve(datastore);
-            }
-        });
-
-        return deferred.promise;
-    };
-
-    var loadTurtle = function (iri, datastore) {
-        if (!datastore) {
-            datastore = new N3.Store();
+    var parser = streamTurtle(input);
+    parser.parse (function (err, triple, prefixes) {
+        if (err) {
+            deferred.reject (err);
+        } else if (triple) {
+            datastore.addTriple(triple);
+        } else {
+            datastore.addPrefixes(prefixes);
+            deferred.resolve(datastore);
         }
+    });
 
-        return Q($.get(iri)).then(function (data) {
-            return parseTurtle(data, datastore);
-        });
-    };
+    return deferred.promise;
+};
 
-    var loadFragments = function (server, subject, datastore) {
-        var ldf = new wald.find.LDF(server, datastore);
+var loadTurtle = function (iri, datastore) {
+    if (!datastore) {
+        datastore = new N3.Store();
+    }
 
-        return ldf.query({ 'subject': subject });
-    };
+    return when($.get(iri)).then(function (data) {
+        return parseTurtle(data, datastore);
+    });
+};
 
-    wald.find.loadFragments = loadFragments;
-    wald.find.loadTurtle = loadTurtle;
-})();
+var loadFragments = function (server, subject, datastore) {
+    var ldf = new LDF(server, datastore);
+
+    return ldf.query({ subject: subject });
+};
+
+
+
+exports.loadFragments = loadFragments;
+exports.loadTurtle = loadTurtle;
 
 // -*- mode: web -*-
 // -*- engine: jsx -*-

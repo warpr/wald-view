@@ -8,14 +8,24 @@
 
 'use strict';
 
-var licensedb = licensedb ? licensedb : {};
-var WALD = WALD ? WALD : {};
+var React = require('react');
+var N3 = require('n3/browser/n3-browser');
+var _ = require('underscore');
+var s = require('underscore.string');
+var query = require('query');
+var $ = require('jquery');
 
 var _array = function (item) {
     return _(item).isArray() ? item : [ item ];
 };
 
-WALD.image = React.createClass({
+var Image = React.createClass({
+    propTypes: {
+      src: React.PropTypes.oneOfType([
+          React.PropTypes.array,
+          React.PropTypes.string
+      ]).isRequired
+    },
     render: function () {
         var src = _array(this.props.src);
         if (!src.length) {
@@ -49,7 +59,11 @@ WALD.image = React.createClass({
     }
 });
 
-WALD.QName = React.createClass({
+var QName = React.createClass({
+    propTypes: {
+        datastore: React.PropTypes.instanceOf(N3.Store).isRequired,
+        iri: React.PropTypes.string.isRequired
+    },
     render: function () {
         var s_iri = s(this.props.iri);
         var qname = this.props.iri;
@@ -67,7 +81,11 @@ WALD.QName = React.createClass({
     }
 });
 
-WALD.keyValue = React.createClass({
+var KeyValue = React.createClass({
+    propTypes: {
+        predicate: React.PropTypes.string.isRequired,
+        subject: React.PropTypes.string.isRequired
+    },
     render: function () {
         var self = this;
         var predicate = self.props.predicate;
@@ -87,7 +105,7 @@ WALD.keyValue = React.createClass({
             var valueStr = '';
             if (value) {
                 if (N3.Util.isIRI(value)) {
-                    valueStr = <WALD.QName datastore={self.props.subject.datastore} iri={value} />;
+                    valueStr = <QName datastore={self.props.subject.datastore} iri={value} />;
                 } else {
                     valueStr = N3.Util.getLiteralValue(value);
                 }
@@ -98,7 +116,8 @@ WALD.keyValue = React.createClass({
             return (
                 <span key={key}>
                     <div className="label-wrapper">
-                        <span className="prefix">{prefix}:</span><span className="label">{label}:</span>{' '}
+                        <span className="prefix">{prefix}:</span><span
+                            className="label">{label}:</span>{' '}
                     </div>
                     <span className="value">{valueStr}</span><br />
                 </span>
@@ -109,7 +128,10 @@ WALD.keyValue = React.createClass({
     }
 });
 
-licensedb.License = React.createClass({
+var License = React.createClass({
+    propTypes: {
+        model: React.PropTypes.instanceOf(query.Model).isRequired,
+    },
     render: function () {
         var license = this.props.model;
         var hasVersion = license.literal('dc:hasVersion');
@@ -120,34 +142,34 @@ licensedb.License = React.createClass({
 
         return (
             <div className="license">
-                <WALD.image src={license.links('foaf:logo')} />
+                <Image src={license.links('foaf:logo')} />
                 <h1>{license.literal('dc:title')}<br />
                     {versionString}
                 </h1>
-                <WALD.keyValue subject={license} predicate="li:id" />
-                <WALD.keyValue subject={license} predicate="li:name" />
+                <KeyValue subject={license} predicate="li:id" />
+                <KeyValue subject={license} predicate="li:name" />
                 <hr />
-                <WALD.keyValue subject={license} predicate="dc:title" />
-                <WALD.keyValue subject={license} predicate="dc:identifier" />
-                <WALD.keyValue subject={license} predicate="dc:hasVersion" />
-                <WALD.keyValue subject={license} predicate="dc:creator" />
+                <KeyValue subject={license} predicate="dc:title" />
+                <KeyValue subject={license} predicate="dc:identifier" />
+                <KeyValue subject={license} predicate="dc:hasVersion" />
+                <KeyValue subject={license} predicate="dc:creator" />
                 <hr />
-                <WALD.keyValue subject={license} predicate="li:plaintext" />
-                <WALD.keyValue subject={license} predicate="cc:legalcode" />
-                <WALD.keyValue subject={license} predicate="li:libre" />
+                <KeyValue subject={license} predicate="li:plaintext" />
+                <KeyValue subject={license} predicate="cc:legalcode" />
+                <KeyValue subject={license} predicate="li:libre" />
                 <hr />
-                <WALD.keyValue subject={license} predicate="cc:permits" />
-                <WALD.keyValue subject={license} predicate="cc:requires" />
+                <KeyValue subject={license} predicate="cc:permits" />
+                <KeyValue subject={license} predicate="cc:requires" />
                 <hr />
-                <WALD.keyValue subject={license} predicate="dc:replaces" />
+                <KeyValue subject={license} predicate="dc:replaces" />
                 <hr />
-                <WALD.keyValue subject={license} predicate="spdx:licenseId" />
+                <KeyValue subject={license} predicate="spdx:licenseId" />
             </div>
         );
     }
 });
 
-licensedb.PlainText = React.createClass({
+var PlainText = React.createClass({
     getInitialState: function () {
         return { body: 'first KOEK' };
     },
@@ -181,6 +203,12 @@ licensedb.PlainText = React.createClass({
         );
     }
 });
+
+exports.Image = Image;
+exports.KeyValue = KeyValue;
+exports.License = License;
+exports.PlainText = PlainText;
+exports.QName = QName;
 
 // -*- mode: web -*-
 // -*- engine: jsx -*-
