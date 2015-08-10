@@ -11,6 +11,7 @@
     "eslint": "1.0.0",
     "eslint-loader": "0.14.2",
     "eslint-plugin-react": "3.2.0",
+    "httpinvoke": "^1.4.0",
     "imports-loader": "^0.6.4",
     "jquery": "^2.1.4",
     "jsonld": "^0.3.22",
