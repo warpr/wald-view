@@ -47,8 +47,15 @@ datastore.loadFragments(server, subject)
         console.log ('ERROR: ', err);
     });
 */
-
+/*
 datastore.loadJsonLD('copyleft-next-0.3.0.jsonld')
+    .then(main)
+    .catch(function (err) {
+        console.log ('ERROR: ', err);
+    });
+*/
+
+datastore.loadJsonLD(document.getElementById('license-data'))
     .then(main)
     .catch(function (err) {
         console.log ('ERROR: ', err);

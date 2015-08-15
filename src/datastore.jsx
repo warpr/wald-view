@@ -92,13 +92,13 @@ var loadJsonLD = function (iri, datastore) {
         datastore = new N3.Store();
     }
 
-    // an embedded <script type="application/ld+json"> block.
     if (typeof iri === 'string') {
         return when(httpinvoke(iri, 'GET')).then(function (data) {
             return parseJsonLD(data.body, datastore);
         });
     } else if (typeof iri === 'object' && iri instanceof HTMLElement) {
-        console.log('iri is html element', iri);
+        // iri is an embedded <script type="application/ld+json"> block.
+        return parseJsonLD(iri.textContent, datastore);
     } else {
         when.error('unsupported iri type in loadJsonLD, expected HTMLElement or string');
     }
