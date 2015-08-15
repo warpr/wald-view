@@ -12,11 +12,11 @@ var React = require('react');
 var _ = require('underscore');
 var httpinvoke = require('httpinvoke/httpinvoke-browser');
 var s = require('underscore.string');
-var wald = require("wald");
+var wald = require('wald');
 
 var License = React.createClass({
     propTypes: {
-        model: React.PropTypes.instanceOf(wald.Model).isRequired,
+        model: React.PropTypes.instanceOf(wald.Model).isRequired
     },
     render: function () {
         var license = this.props.model;
@@ -27,7 +27,7 @@ var License = React.createClass({
         }
 
         return (
-            <div className="license">
+            <section className="license-metadata">
                 <wald.components.Image src={license.links('foaf:logo')} />
                 <h1>{license.literal('dc:title')}<br />
                     {versionString}
@@ -50,7 +50,7 @@ var License = React.createClass({
                 <wald.components.KeyValue subject={license} predicate="dc:replaces" />
                 <hr />
                 <wald.components.KeyValue subject={license} predicate="spdx:licenseId" />
-            </div>
+            </section>
         );
     }
 });
@@ -77,15 +77,15 @@ var PlainText = React.createClass({
 
         if (plaintext) {
             httpinvoke(plaintext, 'GET').then(function (data) {
-                self.setState({ body: data });
+                self.setState({ body: data.body });
             });
         }
     },
     render: function () {
         return (
-            <div className="license-plain-text">
+            <section className="license-plaintext">
                 <pre>{this.state.body}</pre>
-            </div>
+            </section>
         );
     }
 });

@@ -8,9 +8,9 @@
 
 'use strict';
 
-var query = require("query");
+var query = require('query');
 
-exports.components = require("components");
+exports.components = require('components');
 exports.Query = query.Query;
 exports.Model = query.Model;
 

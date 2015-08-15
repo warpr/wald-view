@@ -11,6 +11,9 @@
 var LDF = require('ldf');
 var N3 = require('n3/browser/n3-browser');
 var NProgress = require('nprogress');
+var httpinvoke = require('httpinvoke/httpinvoke-browser');
+var jsonld = require('jsonld').promises;
+
 var when = require('when');
 
 var streamTurtle = function (data) {
@@ -59,12 +62,21 @@ var parseTurtle = function (input, datastore) {
     return deferred.promise;
 };
 
+var parseJsonLD = function (input, datastore) {
+    var data = JSON.parse(input);
+
+    var options = { format: 'application/nquads' };
+    return jsonld.toRDF (data, options).then(function (dataset) {
+        return parseTurtle(dataset, datastore);
+    });
+};
+
 var loadTurtle = function (iri, datastore) {
     if (!datastore) {
         datastore = new N3.Store();
     }
 
-    return when($.get(iri)).then(function (data) {
+    return when(httpinvoke(iri, 'GET')).then(function (data) {
         return parseTurtle(data, datastore);
     });
 };
@@ -75,10 +87,26 @@ var loadFragments = function (server, subject, datastore) {
     return ldf.query({ subject: subject });
 };
 
+var loadJsonLD = function (iri, datastore) {
+    if (!datastore) {
+        datastore = new N3.Store();
+    }
 
+    // an embedded <script type="application/ld+json"> block.
+    if (typeof iri === 'string') {
+        return when(httpinvoke(iri, 'GET')).then(function (data) {
+            return parseJsonLD(data.body, datastore);
+        });
+    } else if (typeof iri === 'object' && iri instanceof HTMLElement) {
+        console.log('iri is html element', iri);
+    } else {
+        when.error('unsupported iri type in loadJsonLD, expected HTMLElement or string');
+    }
+};
 
 exports.loadFragments = loadFragments;
 exports.loadTurtle = loadTurtle;
+exports.loadJsonLD = loadJsonLD;
 
 // -*- mode: web -*-
 // -*- engine: jsx -*-

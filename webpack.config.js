@@ -10,7 +10,8 @@ module.exports = {
     },
     resolve: {
         root: [__dirname + '/src', __dirname],
-        extensions: ['', '.jsx', '.js', '.json']
+        extensions: ['', '.jsx', '.js', '.json'],
+        packageAlias: "browser"
     },
     amd: { jQuery: true },
     module: {

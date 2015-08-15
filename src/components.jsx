@@ -78,7 +78,7 @@ var QName = React.createClass({
         });
 
         if (!prefixed) {
-            qname = this.props.iri.slice(this.props.iri.lastIndexOf("/") + 1)
+            qname = this.props.iri.slice(this.props.iri.lastIndexOf('/') + 1)
         }
 
         return <a href={this.props.iri}>{qname}</a>;
@@ -88,7 +88,8 @@ var QName = React.createClass({
 var KeyValue = React.createClass({
     propTypes: {
         predicate: React.PropTypes.string.isRequired,
-        subject: React.PropTypes.string.isRequired
+        // FIXME: should be instanceOf(wald.Model), but that is failing for some reason
+        subject: React.PropTypes.object.isRequired
     },
     render: function () {
         var self = this;
