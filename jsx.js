@@ -8,10 +8,4 @@
 
 'use strict';
 
-var query = require('query');
-
-exports.components = require('components');
-exports.Query = query.Query;
-exports.Model = query.Model;
-
-
+module.exports = require('src/view');

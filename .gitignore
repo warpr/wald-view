@@ -6,3 +6,6 @@
 /bower_components/
 /js/
 /node_modules/
+/stats.json
+/index.js.map
+

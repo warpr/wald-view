@@ -1,0 +1,17 @@
+#!/usr/bin/env iojs
+
+var wdt = require("webpack-dependency-tree");
+var fs = require("fs");
+
+var statsStr = fs.readFileSync("stats.json");
+var tree = wdt.fromStats({
+    toJson: function () {
+        return JSON.parse(statsStr);
+    }
+});
+
+console.log(wdt.treeToString(tree, { pretty: true }));
+
+// -*- mode: javascript -*-
+
+

@@ -3,10 +3,10 @@
 var webpack = require("webpack");
 
 module.exports = {
-    entry: 'app',
+    entry: 'view',
     output: {
-        path: __dirname + '/js',
-        filename: 'app.js'
+        path: __dirname,
+        filename: 'index.js'
     },
     resolve: {
         root: [__dirname + '/src', __dirname],
@@ -21,8 +21,5 @@ module.exports = {
         loaders: [
             {test: /\.jsx$/, loader: "jsx-loader"}
         ]
-    },
-    plugins: [
-        new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    ]
+    }
 };
