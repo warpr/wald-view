@@ -14,7 +14,7 @@ var httpinvoke = require('httpinvoke/httpinvoke-browser');
 var s = require('underscore.string');
 var wald = require('wald');
 
-var License = React.createClass({
+var Heading = React.createClass({
     propTypes: {
         model: React.PropTypes.instanceOf(wald.Model).isRequired
     },
@@ -27,11 +27,22 @@ var License = React.createClass({
         }
 
         return (
+            <h1>{license.literal('dc:title')} {versionString} </h1>
+        );
+    }
+});
+
+var License = React.createClass({
+    propTypes: {
+        model: React.PropTypes.instanceOf(wald.Model).isRequired
+    },
+    render: function () {
+        var license = this.props.model;
+
+        return (
             <section className="license-metadata">
+                <h2>Metadata</h2>
                 <wald.components.Image src={license.links('foaf:logo')} />
-                <h1>{license.literal('dc:title')}<br />
-                    {versionString}
-                </h1>
                 <wald.components.KeyValue subject={license} predicate="li:id" />
                 <wald.components.KeyValue subject={license} predicate="li:name" />
                 <hr />
@@ -57,7 +68,7 @@ var License = React.createClass({
 
 var PlainText = React.createClass({
     getInitialState: function () {
-        return { body: 'first KOEK' };
+        return { body: 'Loading...' };
     },
     componentDidMount: function () {
         if (this.props) {
@@ -79,17 +90,21 @@ var PlainText = React.createClass({
             httpinvoke(plaintext, 'GET').then(function (data) {
                 self.setState({ body: data.body });
             });
+        } else {
+            self.setState({ body: 'Full license text not available' });
         }
     },
     render: function () {
         return (
             <section className="license-plaintext">
+                <h2>License text</h2>
                 <pre>{this.state.body}</pre>
             </section>
         );
     }
 });
 
+exports.Heading = Heading;
 exports.License = License;
 exports.PlainText = PlainText;
 

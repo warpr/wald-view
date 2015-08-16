@@ -26,8 +26,11 @@ var main = function (datastore) {
 
     React.render (
         <article className="license-group">
-            <licensedb.License model={licenseModel} />
-            <licensedb.PlainText model={licenseModel} />
+            <licensedb.Heading model={licenseModel} />
+            <div className="license-group">
+                <licensedb.License model={licenseModel} />
+                <licensedb.PlainText model={licenseModel} />
+            </div>
         </article>,
         document.getElementById('license-details')
     );
