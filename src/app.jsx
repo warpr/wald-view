@@ -14,9 +14,7 @@ var licensedb = require('license');
 var prefixes = require('prefixes');
 var wald = require('wald');
 
-//var server = 'https://licensedb.org/data/licensedb';
-//var subject = 'https://licensedb.org/id/AGPL-3';
-var subject = 'https://licensedb.org/id/copyleft-next-0.3.0';
+var subject = document.getElementById('license-data').getAttribute('about');
 
 var main = function (datastore) {
 
@@ -35,28 +33,6 @@ var main = function (datastore) {
         document.getElementById('license-details')
     );
 };
-
-/*
-datastore.loadTurtle('licensedb.2015-06-06.ttl')
-    .then(main)
-    .catch(function (err) {
-        console.log ('ERROR: ', err);
-    });
-*/
-/*
-datastore.loadFragments(server, subject)
-    .then(main)
-    .catch(function (err) {
-        console.log ('ERROR: ', err);
-    });
-*/
-/*
-datastore.loadJsonLD('copyleft-next-0.3.0.jsonld')
-    .then(main)
-    .catch(function (err) {
-        console.log ('ERROR: ', err);
-    });
-*/
 
 datastore.loadJsonLD(document.getElementById('license-data'))
     .then(main)
