@@ -8,9 +8,9 @@
 
 'use strict';
 
-var components = require('components');
-var datastore = require('datastore');
-var query = require('query');
+var components = require('./components');
+var datastore = require('./datastore');
+var query = require('./query');
 
 exports.Image = components.Image;
 exports.KeyValue = components.KeyValue;

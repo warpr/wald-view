@@ -8,7 +8,7 @@
 
 'use strict';
 
-var LDF = require('ldf');
+var LDF = require('./ldf');
 var N3 = require('n3/browser/n3-browser');
 var httpinvoke = require('httpinvoke/httpinvoke-browser');
 var jsonld = require('jsonld').promises;
@@ -22,16 +22,16 @@ var streamTurtle = function (data) {
     var delay = 50;
     var parser = new N3.Parser();
 
-    var useNprogress = typeof NProgress !== undefined;
+    var useNprogress = window.NProgress !== undefined;
 
     if (useNprogress) {
-        NProgress.start();
+        window.NProgress.start();
     }
 
     var nextChunk = function () {
         if (offset < dataSize) {
             if (useNprogress) {
-                NProgress.set(offset / dataSize);
+                window.NProgress.set(offset / dataSize);
             }
             parser.addChunk(data.slice(offset, chunkSize + offset));
             offset += chunkSize;
@@ -39,7 +39,7 @@ var streamTurtle = function (data) {
         } else {
             parser.end();
             if (useNprogress) {
-                NProgress.done();
+                window.NProgress.done();
             }
         }
     }

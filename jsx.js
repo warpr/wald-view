@@ -8,4 +8,4 @@
 
 'use strict';
 
-module.exports = require('src/view');
+module.exports = require('./src/view');
