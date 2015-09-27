@@ -7,5 +7,6 @@
 /js/
 /node_modules/
 /stats.json
+/index.js
 /index.js.map
 

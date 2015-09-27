@@ -9,12 +9,8 @@ information using a few React components built for displaying Linked Data.
 usage
 -----
 
-If you can require .jsx files directly in your project you can require the
-.jsx sources directly using:
-
-    var view = require('wald-view/jsx');
-
-Otherwise, use:
+wald:view uses jsx, you will have to use a bundler which can require .jsx
+files directly (e.g. webpack with the jsx-loader plugin).
 
     var view = require('wald-view');
 
