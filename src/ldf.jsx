@@ -9,7 +9,7 @@
 'use strict';
 
 var N3 = require('n3/browser/n3-browser');
-var Qs = require('../bower_components/qs/');
+var URIjs = require('urijs');
 var when = require('when');
 
 var XHR = XMLHttpRequest;
@@ -77,9 +77,10 @@ LDF.prototype.page = function (url) {
 };
 
 LDF.prototype.query = function (pattern) {
-    var url = this._server + '?' + Qs.stringify(pattern);
+    var url = new URIjs(this._server);
+    url.addQuery(pattern);
 
-    return this.page (url);
+    return this.page (url.toString());
 };
 
 module.exports = LDF;

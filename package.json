@@ -7,7 +7,7 @@
     "url": "https://github.com/warpr/wald-find/issues"
   },
   "dependencies": {
-    "bower": "^1.5.3",
+    "URIjs": "^1.16.1",
     "eslint": "^1.5.1",
     "eslint-loader": "^1.0.0",
     "eslint-plugin-react": "^3.4.2",
@@ -20,6 +20,7 @@
     "react-tools": "^0.13.3",
     "underscore": "^1.8.3",
     "underscore.string": "^3.2.2",
+    "urijs": "^1.16.1",
     "webpack": "^1.12.2",
     "webpack-stats-plugin": "^0.1.0",
     "when": "^3.7.3"
